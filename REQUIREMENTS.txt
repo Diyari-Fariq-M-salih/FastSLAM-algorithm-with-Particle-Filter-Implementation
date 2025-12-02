@@ -1,0 +1,24 @@
+REQUIREMENTS - FastSLAM Project
+
+Core Algorithm Requirements:
+- FastSLAM 1.0 implementation using particle filtering + landmark EKFs
+- Accurate motion model and noise simulation
+- Sensor model for very noisy map sensor
+- Measurement likelihood computation
+- Effective resampling technique (low variance preferred)
+
+Filtering Requirements:
+- Fuse noisy sensor map with SLAM-based filtered map
+- Maintain uncertainty representation (covariances)
+- Reject incorrect or extreme sensor readings
+
+Navigation Requirements:
+- Goal representation (x, y)
+- Path planning from estimated pose to goal
+- Controller to drive robot toward goal
+
+Software Requirements:
+- Python 3.x
+- Numpy, Matplotlib
+- Modular code structure for simulator, SLAM, and visualization
+- Reproducible experiments

@@ -1,0 +1,30 @@
+TODO LIST - FastSLAM Project
+
+1. Implement full FastSLAM 1.0 pipeline:
+   - Particle representation (pose + landmark EKFs)
+   - Motion prediction step (using noisy odometry)
+   - Sensor update step (EKF landmark updates)
+   - Weight update based on measurement likelihood
+   - Low‑variance resampling
+
+2. Improve sensor quality through filtering:
+   - Apply FastSLAM-based map filtering
+   - Implement sensor noise models
+   - Add observation gating / outlier rejection
+   - Fuse simulated map sensor with particle-based estimates
+
+3. Integrate very noisy map sensor:
+   - Define noise model for map sensor
+   - Create fusion logic combining sensor map + SLAM map
+   - Compare filtered vs. raw sensor output
+
+4. Navigation to goal:
+   - Add goal specification
+   - Use SLAM-corrected pose
+   - Plan path based on updated map
+   - Implement simple controller to reach goal
+
+5. Debugging & visualization:
+   - Plot particles, map, covariances
+   - Plot sensor noise vs filtered map
+   - Evaluate convergence quality
