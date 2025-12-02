@@ -37,6 +37,12 @@ if __name__ == "__main__":
             data, coordGT = sim.commandAndGetData(3, 6)
             pf.compute_state_transition(3, 6)
             pf.compute_weights(data)
+            best_index = np.argmax(pf.weights)
+            best_particle = pf.particles_set[best_index]
+            est_x = best_particle.x
+            est_y = best_particle.y
+            est_theta = best_particle.theta
+
             pf.resample_w()
             # data: scan of the surrounding of the robot
             #       (50x50 image in robot frame)
