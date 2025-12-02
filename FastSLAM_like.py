@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import imageio.v2
 
+from particle_robot import Particle
 from particlesFilter import ParticlesFilter
 from robot_simulator import RobotSim
 # from robot import RobotModel
@@ -22,15 +23,21 @@ if __name__ == "__main__":
 
     # TODO: Particle filter with a (x, y, theta) vector and a 500x500 pixels
     #       occupancy map for each particle
+    # As needed: part_filter = ParticlesFilter(200, Particle, map_size=500)
+    pf = ParticlesFilter(50, Particle, map_size=500)
+
+
 
     plt.ion()
     i = 0
     
     while True:
-        
         print('iteration ', i)
         try:
             data, coordGT = sim.commandAndGetData(3, 6)
+            pf.compute_state_transition(3, 6)
+            pf.compute_weights(data)
+            pf.resample_w()
             # data: scan of the surrounding of the robot
             #       (50x50 image in robot frame)
             # coordGT: Ground Truth of the actual position
