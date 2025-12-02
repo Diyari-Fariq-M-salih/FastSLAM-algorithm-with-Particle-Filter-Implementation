@@ -37,25 +37,36 @@ class Particle:
         self.x = np.clip(self.x, 1, self.map_size-2)
         self.y = np.clip(self.y, 1, self.map_size-2)
 
+    # MEASUREMENT UPDATE + WEIGHT COMPUTATION
     def get_measurement_probability(self, measure):
-        sensor_img = measure[0]  # 50x50 patch
+        sensor_img = measure[0]   # 50×50 image patch
         px, py = int(self.x), int(self.y)
 
-        # Extract predicted patch from particle map
-        patch = self.map[px-25:px+25, py-25:py+25]
-
-        # If map still empty, return neutral weight
-        if patch.shape != (50, 50):
+        # If too close to border → cannot compare → neutral weight
+        if px < 25 or px > self.map_size - 25 or py < 25 or py > self.map_size - 25:
             return 1.0
 
-        # Compute similarity (simple SSD)
-        diff = patch - sensor_img
-        score = np.exp(-np.sum(diff*diff) / 50.0)
+        patch = self.map[px-25:px+25, py-25:py+25]
 
-        # Update map: Bayesian fusion
-        self.map[px-25:px+25, py-25:py+25] = (
-            0.6 * self.map[px-25:px+25, py-25:py+25] +
-            0.4 * sensor_img
-        )
+        # If this part of the map is empty → initialize only
+        if np.sum(patch) < 1e-6:
+            self.map[px-25:px+25, py-25:py+25] = 0.5 * sensor_img
+            return 1.0
 
-        return score
+        # Normalized Cross-Correlation (NCC)
+        pred = patch.flatten().astype(np.float32)
+        meas = sensor_img.flatten().astype(np.float32)
+
+        pred_norm = (pred - np.mean(pred)) / (np.std(pred) + 1e-6)
+        meas_norm = (meas - np.mean(meas)) / (np.std(meas) + 1e-6)
+
+        corr = np.dot(pred_norm, meas_norm) / len(pred_norm)
+
+        # Convert correlation to a positive weight
+        weight = np.exp(corr * 4.0)
+
+        # Map Fusion
+        fused_patch = 0.7 * patch + 0.3 * sensor_img
+        self.map[px-25:px+25, py-25:py+25] = fused_patch
+
+        return weight
