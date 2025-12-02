@@ -42,9 +42,9 @@ if __name__ == "__main__":
             break
         sim.map[int(coordGT[0]), int(coordGT[1])] = 0.5
         plt.clf()
-        plt.subplot(211)
+        plt.subplot(121)
         plt.imshow(sim.map, interpolation="None", vmin=0, vmax=1)
-        plt.subplot(212)
+        plt.subplot(122)
         plt.imshow(data, interpolation="None", vmin=0, vmax=1)
         plt.show()
         i += 1
