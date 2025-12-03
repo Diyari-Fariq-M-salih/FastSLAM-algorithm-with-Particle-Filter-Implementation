@@ -1,24 +1,30 @@
 import numpy as np
 
-def compute_potential(map_est, x, y):
+def local_potential(map_est, x, y):
+    x = int(x); y = int(y)
+    if x < 3 or x >= 497 or y < 3 or y >= 497:
+        return 9999
+
     local = map_est[x-3:x+3, y-3:y+3]
-    occ = np.mean(local > 0.6)     # repulsive
-    unk = np.mean((local < -0.2))  # attractive
-    return 5*occ - 3*unk
+    occ = np.mean(local > 1.0)
+    unk = np.mean(local < -1.0)
+
+    return 5*occ - 3*unk   # repulsive from occ, attractive to unknown
 
 def potential_field_planner(map_est, x, y, theta, step=3):
-    best_U = 1e9
+    bestU = 999999
     best_dx, best_dtheta = 0, 0
 
-    for dtheta in [-20, -10, 0, 10, 20]:
+    for dtheta in [-30, -15, 0, 15, 30]:
         theta_new = theta + dtheta
         dx = step
-        x_new = int(x + np.sin(theta_new/180*np.pi) * dx)
-        y_new = int(y + np.cos(theta_new/180*np.pi) * dx)
 
-        U = compute_potential(map_est, x_new, y_new)
-        if U < best_U:
-            best_U = U
+        nx = x + np.sin(theta_new/180*np.pi) * dx
+        ny = y + np.cos(theta_new/180*np.pi) * dx
+
+        U = local_potential(map_est, nx, ny)
+        if U < bestU:
+            bestU = U
             best_dx = dx
             best_dtheta = dtheta
 

@@ -16,42 +16,52 @@ if __name__ == "__main__":
         print("STEP", step)
 
         
-        # 1. Use best particle's map to plan motion
+        # 1. Grab best estimate
         
         best = slam.best_particle()
+
+        
+        # 2. Planner
+        
         dx, dtheta = potential_field_planner(best.map, best.x, best.y, best.theta)
 
         
-        # 2. Move robot & get measurement
+        # 3. Move robot and get measurement
         
         try:
             z, gt = sim.commandAndGetData(dx, dtheta)
         except Exception as e:
-            print("Simulation ended:", e)
+            print("Simulation stopped:", e)
             break
 
         
-        # 3. FastSLAM updates
+        # 4. FastSLAM update
         
         slam.motion_update(dx, dtheta)
         slam.measurement_update(z)
 
-        # resample if needed
-        if 1.0 / np.sum(slam.weights**2) < slam.N / 2:
+        # resampling
+        Neff = 1.0 / np.sum(slam.weights**2)
+        if Neff < slam.N / 2:
             slam.resample()
 
         
-        # 4. Show maps
+        # 5. Display
         
         if step % 5 == 0:
             plt.clf()
-            plt.subplot(121)
+            plt.subplot(131)
             plt.title("Ground truth")
             plt.imshow(sim.map, vmin=0, vmax=1)
 
-            plt.subplot(122)
-            plt.title("SLAM map")
+            plt.subplot(132)
+            plt.title("Best Particle Map")
             plt.imshow(best.map, vmin=-2, vmax=2)
+
+            plt.subplot(133)
+            plt.title("Sensor Patch")
+            plt.imshow(z, vmin=0, vmax=1)
+
             plt.pause(0.01)
 
     plt.ioff()
