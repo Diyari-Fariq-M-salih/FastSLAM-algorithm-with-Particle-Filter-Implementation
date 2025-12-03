@@ -64,5 +64,5 @@ class RobotSim:
                                     + 90
                                     + np.random.normal(scale=self.sigmaSensor),
                              reshape=False)
-        sensorImage = 0.4*sensorImage + 0.6*np.random.random((50, 50))
+        sensorImage = 0.9*sensorImage + 0.1*np.random.random((50, 50))
         return sensorImage
