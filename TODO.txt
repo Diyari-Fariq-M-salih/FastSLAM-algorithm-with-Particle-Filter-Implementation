@@ -28,3 +28,5 @@ TODO LIST - FastSLAM Project
    - Plot particles, map, covariances
    - Plot sensor noise vs filtered map
    - Evaluate convergence quality
+
+project goal pipeline >>> estimate map using fastSLAM with reactive Avoidance >>> explore full map >>> return to start pose / pathplan to goal
