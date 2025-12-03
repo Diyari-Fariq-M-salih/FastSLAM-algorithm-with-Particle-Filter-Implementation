@@ -4,8 +4,8 @@ import numpy as np
 class Particle:
     def __init__(self, params):
         self.map_size = params.get("map_size", 500)
-        self.x = 30
-        self.y = 30
+        self.x = 200
+        self.y = 200
         self.theta = 0      # degrees, like RobotSim
         self.weight = 1.0
 

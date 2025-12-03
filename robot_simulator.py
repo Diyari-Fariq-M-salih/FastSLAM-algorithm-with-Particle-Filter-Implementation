@@ -18,8 +18,8 @@ class RobotSim:
     classdocs
     '''
     def __init__(self):
-        self.x = 30
-        self.y = 30
+        self.x = 200
+        self.y = 200
         self.theta = 0
         self.sigmaDTheta = 3
         self.sigmaDx = 2
@@ -27,19 +27,27 @@ class RobotSim:
         self.map = self.generateMap()
 
     def commandAndGetData(self, dx, dtheta):
+        # Update orientation in DEGREES
         self.theta += dtheta + np.random.normal(scale=self.sigmaDTheta)
-        if self.theta > np.pi:
-            self.theta -= 2*np.pi
-        if self.theta < -np.pi:
-            self.theta += 2*np.pi
+
+        # Normalize theta to [-180, 180] degrees
+        self.theta = (self.theta + 180) % 360 - 180
+
+        # Forward noise
         dxTrue = dx + np.random.normal(scale=self.sigmaDx)
-        self.x += np.sin(self.theta/180*np.pi)*dxTrue
-        self.y += np.cos(self.theta/180*np.pi)*dxTrue
+
+        # Use degrees consistently: theta_deg → radians
+        rad = self.theta * np.pi / 180.0
+        self.x += np.sin(rad) * dxTrue
+        self.y += np.cos(rad) * dxTrue
+
         print(f"val x {self.x} val y {self.y} val theta {self.theta}")
+
         if self.map[int(self.x), int(self.y)] == 1:
             raise Exception("CRASH ON OBSTACLE!")
         if int(self.x) == 450 and int(self.y) == 450:
             raise Exception("Goal reached!")
+
         return self.generateData(), (self.x, self.y)
 
     def generateMap(self, map_size=500):
