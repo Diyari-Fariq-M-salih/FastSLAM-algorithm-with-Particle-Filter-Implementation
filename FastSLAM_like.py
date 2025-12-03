@@ -45,6 +45,9 @@ if __name__ == "__main__":
 
     forward = 0
     turn = 0
+    trajectory_x = []
+    trajectory_y = []
+
 
 
     while True:
@@ -56,6 +59,8 @@ if __name__ == "__main__":
 
             data, coordGT = sim.commandAndGetData(forward, turn)
             sim.theta = (sim.theta + 180) % 360 - 180
+            trajectory_x.append(coordGT[0])
+            trajectory_y.append(coordGT[1])
 
 
             # 2. SAFE ROTATION-INVARIANT AVOIDANCE
@@ -118,6 +123,11 @@ if __name__ == "__main__":
         plt.subplot(131)
         plt.title("Ground Truth Map")
         plt.imshow(sim.map.T, origin='lower', vmin=0, vmax=1)
+
+        # Draw trajectory (swap x/y for imshow coordinates)
+        if len(trajectory_x) > 1:
+            plt.plot(trajectory_y, trajectory_x, color='white', linewidth=1)
+
 
         plt.subplot(132)
         plt.title("Sensor Patch")
