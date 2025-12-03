@@ -66,10 +66,31 @@ class Particle:
 
         # Simple likelihood: squared-error between map patch and measurement
         diff = patch - sensor_world
-        score = np.exp(-np.sum(diff * diff) / 150)
+        score = np.exp(-np.sum(diff * diff) / 400)
 
-        # Map fusion (exponential moving average)
-        fused = 0.7 * patch + 0.3 * sensor_world
-        self.map[px-25:px+25, py-25:py+25] = fused
+        # Binary Bayesian occupancy update (per cell)
+        # prior: current belief in this particle's map
+        prior = patch  # P(occ) in [0, 1]
+
+        # measurement: use sensor_world as "probability of occupancy"
+        # clamp away from 0/1 to avoid numerical issues
+        z = np.clip(sensor_world, 0.05, 0.95)
+
+        # Likelihoods
+        #   P(z | occ)  ~ z
+        #   P(z | free) ~ 1 - z
+        p_z_given_occ = z
+        p_z_given_free = 1.0 - z
+
+        # Unnormalized posteriors
+        p_occ_unnorm = p_z_given_occ * prior
+        p_free_unnorm = p_z_given_free * (1.0 - prior)
+
+        denom = p_occ_unnorm + p_free_unnorm + 1e-8
+        posterior = p_occ_unnorm / denom  # P(occ | z)
+
+        # Write updated occupancy back into the particle's map
+        self.map[px-25:px+25, py-25:py+25] = posterior
+
 
         return score

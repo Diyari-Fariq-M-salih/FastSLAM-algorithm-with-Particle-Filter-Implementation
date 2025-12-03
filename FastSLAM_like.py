@@ -153,8 +153,8 @@ if __name__ == "__main__":
             best_index = np.argmax(pf.weights)
             best_particle = pf.particles_set[best_index]
             slam_map = best_particle.map
-
-            pf.resample_w()
+            if i % 5 == 0: 
+                pf.resample_w()
 
         except Exception as e:
             print(repr(e))
