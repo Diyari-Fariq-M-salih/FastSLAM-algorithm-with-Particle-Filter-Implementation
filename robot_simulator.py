@@ -13,6 +13,8 @@ import numpy as np
 from scipy.ndimage import rotate
 
 
+
+
 class RobotSim:
     '''
     classdocs
