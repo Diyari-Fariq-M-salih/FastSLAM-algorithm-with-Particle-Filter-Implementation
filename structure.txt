@@ -1,0 +1,8 @@
+main_folder/
+│
+├── main.py                ← main loop (SLAM + planning)
+├── slam_particle.py       ← particle with pose + map + functions
+├── fastslam_filter.py     ← FastSLAM loop (PF + mapping)
+├── planner.py             ← potential-field exploration
+├── robot_simulator.py     ← given simulator (unchanged)
+├── utils.py               ← map comparison, log-odds utilities
