@@ -3,9 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-STEP_SIZE = 3
-NUM_STEPS = 50000
-SENSOR_RADIUS = 5      # 50×50 patch around robot
+STEP_SIZE = 10
+NUM_STEPS = 5000
+SENSOR_RADIUS = 5     # 50×50 patch around robot
 
 
 def sense_local_patch(grid, x, y):
